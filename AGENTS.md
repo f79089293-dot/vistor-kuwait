@@ -3,7 +3,7 @@
 ## النطاق
 
 مشروع موحّد يجمع موقع العملاء (HTML ثابت) ولوحة التحكم (HTML/JS جديدة) في استضافة واحدة.
-كلاهما متصل بنفس مشروع Firebase `kuwait-b7d4b` ويتشاركان البيانات عبر collection `customers`.
+كلاهما متصل بنفس مشروع Firebase `qatar-oman` ويتشاركان البيانات عبر collection `customers`.
 
 ## التشغيل
 
@@ -45,12 +45,12 @@ python3 serve.py
 
 ## Firebase
 
-مشروع واحد موحّد `kuwait-b7d4b` لكل من الموقع ولوحة التحكم:
-- apiKey: AIzaSyAfWfzLyUlsq3NFsU2JK-qcIZkXgN023U0
+مشروع واحد موحّد `qatar-oman` لكل من الموقع ولوحة التحكم:
+- apiKey: AIzaSyDNQotHYC8WcMi1AAHrHJe_rQR7OZ0V5FI
 - الإعدادات في `assets/js/firebase-client.js` (الموقع) و `admin/assets/js/firebase-config.js` (اللوحة)
 
 حساب المدير (مُضمّن في كلا الملفين):
-- email: panel-dashboard@kuwait-b7d4b.local
+- email: panel-dashboard@qatar-oman.local
 - password: ZainDashboard2026!
 
 ## تدفق البيانات (Data Flow)

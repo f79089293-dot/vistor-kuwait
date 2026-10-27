@@ -1,12 +1,13 @@
-// إعدادات Firebase — مشروع kuwait-b7d4b (موحّد للموقع ولوحة التحكم)
+// إعدادات Firebase — مشروع qatar-oman (موحّد للموقع ولوحة التحكم)
 const firebaseConfig = {
-  apiKey: "AIzaSyAfWfzLyUlsq3NFsU2JK-qcIZkXgN023U0",
-  authDomain: "kuwait-b7d4b.firebaseapp.com",
-  databaseURL: "https://kuwait-b7d4b-default-rtdb.firebaseio.com",
-  projectId: "kuwait-b7d4b",
-  storageBucket: "kuwait-b7d4b.firebasestorage.app",
-  messagingSenderId: "686238776602",
-  appId: "1:686238776602:web:dfb65a9525b3b86cd740a3"
+  apiKey: "AIzaSyDNQotHYC8WcMi1AAHrHJe_rQR7OZ0V5FI",
+  authDomain: "qatar-oman.firebaseapp.com",
+  databaseURL: "https://qatar-oman-default-rtdb.firebaseio.com",
+  projectId: "qatar-oman",
+  storageBucket: "qatar-oman.firebasestorage.app",
+  messagingSenderId: "488967046879",
+  appId: "1:488967046879:web:77d744e1b45d0f59da8b6a",
+  measurementId: "G-FP0FKD9W4T"
 };
 
 if (!firebase.apps.length) {
@@ -14,7 +15,7 @@ if (!firebase.apps.length) {
 }
 
 // بيانات دخول لوحة التحكم (نفس حساب موقع العملاء — له صلاحية قراءة/كتابة على customers)
-const PANEL_EMAIL = 'panel-dashboard@kuwait-b7d4b.local';
+const PANEL_EMAIL = 'panel-dashboard@qatar-oman.local';
 const PANEL_PASSWORD = 'ZainDashboard2026!';
 
 const db = firebase.firestore();

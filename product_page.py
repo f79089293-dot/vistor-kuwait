@@ -18,9 +18,9 @@ import urllib.parse
 import urllib.error
 from html import escape
 
-PROJECT_ID = 'kuwait-b7d4b'
-API_KEY = 'AIzaSyAfWfzLyUlsq3NFsU2JK-qcIZkXgN023U0'
-PANEL_EMAIL = 'panel-dashboard@kuwait-b7d4b.local'
+PROJECT_ID = 'qatar-oman'
+API_KEY = 'AIzaSyDNQotHYC8WcMi1AAHrHJe_rQR7OZ0V5FI'
+PANEL_EMAIL = 'panel-dashboard@qatar-oman.local'
 PANEL_PASSWORD = 'ZainDashboard2026!'
 
 BASE_URL = 'https://althenayanfarms.app'
