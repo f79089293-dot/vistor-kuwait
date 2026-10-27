@@ -112,7 +112,7 @@
     <!-- منتجات محلية مولّدة (عرض فوري قبل مزامنة قاعدة البيانات) -->
     <script src="./assets/js/products-local.js?v=87be790d21"></script>
     <script defer src="./assets/js/firebase-client.js?v=3"></script>
-    <script defer src="./assets/js/products-store.js"></script>
+    <script defer src="./assets/js/products-store.js?v=3"></script>
     <script src="./assets/js/cart.js"></script>
     <style>
         * {
@@ -593,9 +593,15 @@
         ];
 
         function initializeDefaultProducts() {
+            // القائمة الافتراضية المضمّنة (15) أقدم من قائمة المشروع المولّدة
+            // (LOCAL_PRODUCTS). لا تستخدمها إلا عند غياب أي مصدر آخر، وحدّث
+            // النسخة المحلية إن كانت أقل اكتمالاً حتى لا تُخفي منتجات حقيقية.
+            const fromFile = Array.isArray(window.LOCAL_PRODUCTS) ? window.LOCAL_PRODUCTS : [];
             const stored = JSON.parse(localStorage.getItem('allProducts')) || [];
             if (stored.length === 0) {
-                localStorage.setItem('allProducts', JSON.stringify(defaultProducts));
+                localStorage.setItem('allProducts', JSON.stringify(fromFile.length ? fromFile : defaultProducts));
+            } else if (fromFile.length > stored.length) {
+                localStorage.setItem('allProducts', JSON.stringify(fromFile));
             }
         }
 
@@ -634,7 +640,18 @@
             }).join('');
         }
 
+        // منتج صالح للعرض: اسم + صورة + سعر
+        function isValidProduct(product) {
+            return !!(product && product.name && product.img && product.price);
+        }
+
+        // لا تُستبدل القائمة المحلية إلا بمصدر غير فارغ وكل عناصره صالحة
+        function usableProducts(list) {
+            return Array.isArray(list) && list.length > 0 && list.every(isValidProduct);
+        }
+
         function renderProducts(allProducts) {
+            if (!usableProducts(allProducts)) return; // لا تمسح العرض الحالي بمصدر ناقص
             const grid = document.getElementById('productsGrid');
             renderMenuProducts(allProducts);
             if (!grid) return;

@@ -9,9 +9,24 @@
 (function () {
   const LS_KEY = 'allProducts';
 
-  function readLocal() {
-    try { return JSON.parse(localStorage.getItem(LS_KEY)) || []; }
+  function validOnly(list) {
+    return (Array.isArray(list) ? list : []).filter(p => p && p.name && p.img && p.price);
+  }
+
+  function readLocalStorage() {
+    try { return validOnly(JSON.parse(localStorage.getItem(LS_KEY))); }
     catch (e) { return []; }
+  }
+
+  /**
+   * المصدر المحلي الأفضل: ملف المشروع المولّد (LOCAL_PRODUCTS) مقابل نسخة
+   * المتصفح. نأخذ الأغنى لأن localStorage قد يحمل لقطة قديمة أصغر (منتجات
+   * افتراضية قديمة) فتُخفي منتجات حقيقية عند اكتمال المزامنة.
+   */
+  function readLocal() {
+    const fromFile = validOnly(window.LOCAL_PRODUCTS);
+    const fromLS = readLocalStorage();
+    return fromLS.length > fromFile.length ? fromLS : fromFile;
   }
 
   function writeLocal(products) {
@@ -25,15 +40,21 @@
   /** جلب المنتجات: Firestore أولاً، ثم المحلي عند الفشل */
   window.storeGetProducts = async function () {
     if (firestoreAvailable()) {
-      try {
-        const snap = await window.db.collection('products').orderBy('order', 'asc').get();
-        if (!snap.empty) {
+      // orderBy('order') يفشل إن كانت وثيقة بلا حقل order أو إن كان الفهرس ناقصاً
+      for (const useOrder of [true, false]) {
+        try {
+          const col = window.db.collection('products');
+          const snap = await (useOrder ? col.orderBy('order', 'asc') : col).get();
           const items = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
-          writeLocal(items); // مزامنة النسخة المحلية
-          return items;
+          const valid = items.filter(p => p.name && p.img && p.price);
+          if (valid.length) {
+            writeLocal(valid); // مزامنة النسخة المحلية
+            return valid;
+          }
+          break; // المجموعة فارغة أو كل وثائقها ناقصة → استخدم المحلي
+        } catch (e) {
+          if (!useOrder) console.warn('Firestore products read failed, using local:', e);
         }
-      } catch (e) {
-        console.warn('Firestore products read failed, using local:', e);
       }
     }
     return readLocal();
@@ -76,15 +97,26 @@
   /** الاستماع اللحظي لتغييرات المنتجات (لتحديث واجهة العميل مباشرة) */
   window.storeWatchProducts = function (onChange) {
     if (!firestoreAvailable()) return function () {};
-    try {
-      return window.db.collection('products').orderBy('order', 'asc')
+    let unsub = function () {};
+    const attach = (useOrder) => {
+      const col = window.db.collection('products');
+      return (useOrder ? col.orderBy('order', 'asc') : col)
         .onSnapshot((snap) => {
-          if (!snap.empty) {
-            const items = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
-            writeLocal(items);
-            onChange(items);
+          const items = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
+          const valid = items.filter(p => p.name && p.img && p.price);
+          if (valid.length) {
+            writeLocal(valid);
+            onChange(valid);
           }
-        }, (err) => console.warn('products watch error:', err));
+        }, (err) => {
+          // فشل orderBy (فهرس ناقص) → أعِد الاشتراك بدون ترتيب
+          if (useOrder) { console.warn('products watch retry without order:', err && err.code); unsub = attach(false); }
+          else console.warn('products watch error:', err);
+        });
+    };
+    try {
+      unsub = attach(true);
+      return function () { try { unsub(); } catch (e) {} };
     } catch (e) {
       return function () {};
     }
