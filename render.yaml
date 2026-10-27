@@ -1,0 +1,16 @@
+# إعداد نشر Render (Blueprint) — خدمة ويب Python تشغّل serve.py
+# ملاحظة: render.yaml يُطبَّق فقط عند إنشاء الخدمة عبر New > Blueprint.
+# إن كانت الخدمة منشأة يدوياً، اضبط أمر التشغيل يدوياً في اللوحة:
+#   Start Command: python3 serve.py
+services:
+  - type: web
+    name: althenayan-site
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python3 serve.py
+    healthCheckPath: /healthz
+    autoDeployTrigger: commit
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.13.5"

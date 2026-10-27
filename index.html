@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- تسريع الاتصال بمصادر Firebase (يبدأ المصافحة مبكراً) -->
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin>
+    <link rel="dns-prefetch" href="https://firestore.googleapis.com">
+
+    <!-- 🔐 تحقق جوجل لل Search Console -->
+    <meta name="google-site-verification" content="1NUX97Jcj0di0TJmZBe5yET1JND9P52jsV0B8NpIxUo" />
+    <meta name="google-site-verification" content="oczAxGRQXxoHR1rCVueBRhq83kPe0NQRznLSDuc1KV8" />
+
+    <!-- 🔍 SEO أساسي -->
+    <title>مزارع الثنيان | توصيل تين وتمر وروبيان ودواجن طازجة في الكويت</title>
+    <meta name="description" content="مزارع الثنيان - متجر إلكتروني كويتي لتوصيل المنتجات الطازجة: تين أخضر، تمر الصقعي والخلاص، روبيان عماني جامبو، بط فرنسي، حمام، دجاج ساسو، وسمك بلطي. توصيل مجاني خلال 40 دقيقة داخل الكويت. اطلب الآن أونلاين." />
+    <meta name="keywords" content="مزارع الثنيان, توصيل تين الكويت, تمر الصقعي الكويت, تمر الخلاص, روبيان عماني جامبو, بط فرنسي الكويت, حمام طازج, دجاج ساسو, سمك بلطي, متجر دواجن كويت, توصيل طعام الكويت, مزارع الكويت, شراء تين اون لاين, شراء تمر اون لاين, عصفور تين, حمام زاجل, Althenayan Farms" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="author" content="مزارع الثنيان - Althenayan Farms" />
+    <meta name="language" content="Arabic" />
+    <meta name="rating" content="general" />
+    <meta name="geo.region" content="KW" />
+    <meta name="geo.placename" content="Kuwait" />
+    <link rel="canonical" href="https://althenayanfarms.app/" />
+    <link rel="alternate" hreflang="ar" href="https://althenayanfarms.app/" />
+    <link rel="alternate" hreflang="x-default" href="https://althenayanfarms.app/" />
+    <meta name="theme-color" content="#004d7a" />
+
+    <!-- 📱 Open Graph (فيسبوك/واتساب) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="مزارع الثنيان" />
+    <meta property="og:locale" content="ar_KW" />
+    <meta property="og:title" content="مزارع الثنيان | توصيل تين وتمر وروبيان ودواجن طازجة في الكويت" />
+    <meta property="og:description" content="متجر إلكتروني كويتي لتوصيل المنتجات الطازجة: تين، تمر، روبيان، بط، حمام، دجاج، سمك. توصيل مجاني خلال 40 دقيقة. اطلب الآن." />
+    <meta property="og:url" content="https://althenayanfarms.app/" />
+    <meta property="og:image" content="https://althenayanfarms.app/assets/images/nfc2.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:alt" content="مزارع الثنيان - توصيل طازج في الكويت" />
+
+    <!-- 🐦 Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="مزارع الثنيان | توصيل تين وتمر وروبيان ودواجن طازجة في الكويت" />
+    <meta name="twitter:description" content="توصيل المنتجات الطازجة في الكويت: تين، تمر، روبيان، بط، حمام، دجاج، سمك. توصيل مجاني خلال 40 دقيقة." />
+    <meta name="twitter:image" content="https://althenayanfarms.app/assets/images/nfc2.png" />
+
+    <!-- 🗺️ ربط خريطة الموقع -->
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+
+    <!-- 📊 JSON-LD: المنشأة التجارية + قائمة المنتجات -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Store",
+      "@id": "https://althenayanfarms.app/#store",
+      "name": "مزارع الثنيان",
+      "alternateName": "Althenayan Farms",
+      "image": "https://althenayanfarms.app/assets/images/nfc2.png",
+      "url": "https://althenayanfarms.app/",
+      "description": "متجر إلكتروني كويتي لتوصيل المنتجات الطازجة: تين، تمر، روبيان، دواجن، وأسماك.",
+      "priceRange": "KWD",
+      "currenciesAccepted": "KWD",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "KW",
+        "addressRegion": "الكويت"
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+        "opens": "00:00",
+        "closes": "23:59"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.7",
+        "reviewCount": "1280"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "منتجات مزارع الثنيان",
+      "itemListElement": [
+        {"@type":"ListItem","position":1,"name":"عرض التين الأخضر الفاخر - بوكس 5 كيلو","url":"https://althenayanfarms.app/","price":"3.500","priceCurrency":"KWD"},
+        {"@type":"ListItem","position":2,"name":"عرض كل الكويت الجديد - 10 كيلو روبيان عماني جامبو","url":"https://althenayanfarms.app/","price":"5.000","priceCurrency":"KWD"},
+        {"@type":"ListItem","position":3,"name":"عرض تمر الصقعي الملكي - بوكس 5 كيلو","url":"https://althenayanfarms.app/","price":"3.960","priceCurrency":"KWD"},
+        {"@type":"ListItem","position":4,"name":"عرض تمر الخلاص المكبوس - بوكس 8 كيلو","url":"https://althenayanfarms.app/","price":"3.960","priceCurrency":"KWD"},
+        {"@type":"ListItem","position":5,"name":"عرض 50 عصفور التين","url":"https://althenayanfarms.app/","price":"7.000","priceCurrency":"KWD"},
+        {"@type":"ListItem","position":6,"name":"عرض 5 بطات فرنسي","url":"https://althenayanfarms.app/","price":"10.000","priceCurrency":"KWD"},
+        {"@type":"ListItem","position":7,"name":"عرض 10 بطات فرنسي","url":"https://althenayanfarms.app/","price":"20.000","priceCurrency":"KWD"},
+        {"@type":"ListItem","position":8,"name":"بطة فرنسي","url":"https://althenayanfarms.app/","price":"4.000","priceCurrency":"KWD"},
+        {"@type":"ListItem","position":9,"name":"بوكس 5 حمامات","url":"https://althenayanfarms.app/","price":"4.000","priceCurrency":"KWD"},
+        {"@type":"ListItem","position":10,"name":"بوكس 10 حمامات","url":"https://althenayanfarms.app/","price":"8.000","priceCurrency":"KWD"},
+        {"@type":"ListItem","position":11,"name":"بوكس 20 حمامة","url":"https://althenayanfarms.app/","price":"12.000","priceCurrency":"KWD"},
+        {"@type":"ListItem","position":12,"name":"بوكس 10 حمامات زاجل","url":"https://althenayanfarms.app/","price":"8.000","priceCurrency":"KWD"},
+        {"@type":"ListItem","position":13,"name":"البوكس الصغير - سمك البلطي 5 كيلو","url":"https://althenayanfarms.app/","price":"12.000","priceCurrency":"KWD"},
+        {"@type":"ListItem","position":14,"name":"البوكس الكبير - سمك البلطي 10 كيلو","url":"https://althenayanfarms.app/","price":"20.000","priceCurrency":"KWD"},
+        {"@type":"ListItem","position":15,"name":"بوكس 10 دجاج عربي ساسو","url":"https://althenayanfarms.app/","price":"20.000","priceCurrency":"KWD"}
+      ]
+    }
+    </script>
+
+    <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    
+    <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+    <!-- منتجات محلية مولّدة (عرض فوري قبل مزامنة قاعدة البيانات) -->
+    <script src="./assets/js/products-local.js?v=87be790d21"></script>
+    <script defer src="./assets/js/firebase-client.js?v=3"></script>
+    <script defer src="./assets/js/products-store.js"></script>
+    <script src="./assets/js/cart.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        html, body {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden; /* منع التمرير الأفقي تماماً */
+            position: relative;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #111;
+            padding-bottom: 110px;
+        }
+        
+        /* رأس الصفحة العلوي */
+        .MainContainer_headerContainer__RY5Ne {
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            width: 100%;
+        }
+        .Header_header__HSEQ9 {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 10px 15px;
+        }
+        .Header_nav__DVSK7 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .Header_logoWithCatalog__v4fgc {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .Logo_logo__oq6_b {
+            display: block;
+            width: 110px;
+            height: 35px;
+            position: relative;
+        }
+        .Logo_fullLogo__l2rPp {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        /* درج القائمة الجانبي */
+        .MenuOverlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+            z-index: 998; opacity: 0; pointer-events: none; transition: opacity 0.25s;
+        }
+        .MenuOverlay.open { opacity: 1; pointer-events: auto; }
+        .MenuDrawer {
+            position: fixed; top: 0; right: -320px; width: 300px; max-width: 85vw;
+            height: 100%; background: #fff; z-index: 999; overflow-y: auto;
+            transition: right 0.3s ease; box-shadow: -2px 0 12px rgba(0,0,0,0.12);
+            padding: 18px 0 30px;
+        }
+        .MenuDrawer.open { right: 0; }
+        .MenuDrawer h3 {
+            font-size: 15px; color: #004d7a; padding: 10px 20px 6px;
+            border-bottom: 1px solid #eee; margin-bottom: 4px;
+        }
+        .MenuDrawer .menu-close {
+            position: absolute; top: 12px; left: 14px; border: none;
+            background: #f1f3f5; border-radius: 8px; width: 32px; height: 32px;
+            font-size: 16px; cursor: pointer; color: #333;
+        }
+        .MenuDrawer a.menu-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 11px 20px; font-size: 14.5px; font-weight: 600; color: #222;
+            text-decoration: none;
+        }
+        .MenuDrawer a.menu-link:hover { background: #f4f8fb; color: #004d7a; }
+        .MenuDrawer a.menu-link img {
+            width: 34px; height: 34px; border-radius: 8px; object-fit: cover; background: #f1f3f5;
+        }
+        .MenuDrawer a.menu-link .m-price { margin-right: auto; color: #004d7a; font-size: 13px; font-weight: 800; }
+
+        .CatalogButton_button__wTnA9 {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #f1f3f5;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .CartButton_wrapper__DN_bX .Button_primary__SrbPy {
+            background-color: #004d7a;
+            color: #fff;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+        }
+
+        /* حاوية المحتوى الرئيسية */
+        .ContentWrapper_container__T9e2i {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+            width: 100%;
+        }
+        h1.Typography_h1__cT2UT {
+            font-size: 24px;
+            font-weight: 800;
+            margin: 15px 0 12px 0;
+        }
+
+        /* أزرار الفلاتر الأفقية */
+        .FilterPresets_wrapper__sSfR_ {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .FilterPresets_wrapper__sSfR_::-webkit-scrollbar {
+            display: none;
+        }
+        .FilterPresets_filter__czMu5 {
+            background: #f1f3f5;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #111;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .FilterPresets_filter__czMu5 img {
+            width: 16px;
+            height: 16px;
+            object-fit: contain;
+        }
+
+        /* شريط تفاصيل المتجر */
+        ._slug__merchantDetailsWrapper__Ni_d0 {
+            background: #fff;
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        .MerchantDetails_wrapper__NGWQ1 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            width: 100%;
+            text-align: center;
+        }
+        .MerchantDetails_detail__ez3c5 {
+            text-align: center;
+        }
+        .MerchantDetails_label__diWJe {
+            color: #777;
+            font-size: 11px;
+            margin-bottom: 4px;
+        }
+        .Typography_p1__A2FUF {
+            font-size: 14px;
+            font-weight: 700;
+        }
+        .MerchantDetails_open__C8KJd {
+            color: #2b8a3e;
+            background: #e6fcf5;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* شبكة المنتجات */
+        .ProductsGrid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+        .ProductCard {
+            background: #fff;
+            border-radius: 18px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            position: relative;
+            min-height: 130px;
+            width: 100%;
+        }
+        .ProductInfo {
+            flex: 1;
+            padding-left: 10px;
+        }
+        .ProductName {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #111;
+            line-height: 1.3;
+        }
+        .ProductDesc {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 8px;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .ProductPrice {
+            font-size: 15px;
+            font-weight: 800;
+            color: #111;
+        }
+        .ProductImageWrapper {
+            width: 90px;
+            height: 90px;
+            border-radius: 14px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .ProductImageWrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* زر الإضافة الأولي */
+        .AddButton {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 4px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 12px;
+            color: #111;
+        }
+
+        /* حاوية عداد الكمية */
+        .QuantityController {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 2px 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .QuantityController button {
+            background: none;
+            border: none;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #004d7a;
+            padding: 2px 6px;
+        }
+
+        /* شريط السلة العائم أسفل الشاشة */
+        .FloatingCartBar {
+            position: fixed;
+            bottom: 15px;
+            left: 5%;
+            width: 90%;
+            max-width: 500px;
+            background-color: #cccccc;
+            color: #666666;
+            border-radius: 16px;
+            padding: 12px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            cursor: default;
+            transition: all 0.3s ease;
+        }
+        .FloatingCartBar.active-cart {
+            background-color: #004d7a;
+            color: white;
+            box-shadow: 0 8px 20px rgba(0, 77, 122, 0.3);
+            cursor: pointer;
+        }
+        .FloatingCartBar .cart-text {
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .FloatingCartBar .cart-badge {
+            background: #e0e0e0;
+            color: #666;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .FloatingCartBar.active-cart .cart-badge {
+            background: #ffffff;
+            color: #004d7a;
+        }
+        .FloatingCartBar .cart-price {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        @media (min-width: 769px) {
+            .ProductsGrid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- رأس الصفحة العلوي -->
+    <div class="MainContainer_headerContainer__RY5Ne">
+        <header class="Header_header__HSEQ9">
+            <div class="Header_nav__DVSK7">
+                <div class="Header_logoWithCatalog__v4fgc">
+                    <a class="Logo_logo__oq6_b" href="#">
+                        <img alt="Snoonu" src="assets/images/nfc2.png" class="Logo_fullLogo__l2rPp">
+                    </a>
+                    <button class="CatalogButton_button__wTnA9" id="menuBtn">
+                        <span>القائمة</span>
+                    </button>
+                </div>
+                <div class="Header_sideWrapper__3FSV4">
+                    <div class="CartButton_wrapper__DN_bX">
+                        <button class="Button_button__xKXcy Button_primary__SrbPy" onclick="window.location.href='creatprogect.html'" style="background-color: #2b8a3e; margin-left: 5px; display: none;">
+                            <span>⚙️ إدارة</span>
+                        </button>
+                        <button class="Button_button__xKXcy Button_primary__SrbPy">
+                            <span id="header-total">0.000 د.ك</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+    </div>
+
+    <!-- درج القائمة: صفحات الموقع + المنتجات (ديناميكي) -->
+    <div class="MenuOverlay" id="menuOverlay" onclick="toggleMenu(false)"></div>
+    <nav class="MenuDrawer" id="menuDrawer" aria-label="قائمة الموقع">
+        <button class="menu-close" onclick="toggleMenu(false)">✕</button>
+        <h3>صفحات الموقع</h3>
+        <a class="menu-link" href="/">🏠 الرئيسية</a>
+        <a class="menu-link" href="/prices">💰 أسعار اليوم</a>
+        <a class="menu-link" href="/cartepage.html">🛒 سلة الطلبات</a>
+        <a class="menu-link" href="/terms.html">📜 الشروط والأحكام</a>
+        <a class="menu-link" href="/privacy.html">🔒 سياسة الخصوصية</a>
+        <a class="menu-link" href="/returns.html">↩️ سياسة الاسترجاع</a>
+        <h3>المنتجات</h3>
+        <div id="menuProducts"></div>
+    </nav>
+
+    <div class="ContentWrapper_container__T9e2i">
+        <!-- عنوان المتجر -->
+        <h1 class="Typography_h1__cT2UT">مزارع الثنيان</h1>
+        
+        <!-- أزرار الفلاتر الأفقية -->
+        <div class="FilterPresets_wrapper__sSfR_">
+            <div class="FilterPresets_filter__czMu5">
+                <img src="assets/images/free_delivery.33e8a802.svg" alt="توصيل مجاني">
+                <span>توصيل مجاني</span>
+            </div>
+            <div class="FilterPresets_filter__czMu5">
+                <span>خلال 40 دقيقة</span>
+            </div>
+            <div class="FilterPresets_filter__czMu5">
+                <span>نقل مخصص</span>
+            </div>
+        </div>
+
+        <!-- تفاصيل المتجر -->
+        <div class="_slug__merchantDetailsWrapper__Ni_d0">
+            <div class="MerchantDetails_wrapper__NGWQ1">
+                <div class="MerchantDetails_detail__ez3c5">
+                    <p class="MerchantDetails_label__diWJe">وقت التوصيل</p>
+                    <p class="Typography_p1__A2FUF">40 دقيقة</p>
+                </div>
+                <div class="MerchantDetails_detail__ez3c5">
+                    <p class="MerchantDetails_label__diWJe">التقييم</p>
+                    <p class="Typography_p1__A2FUF">4.7</p>
+                </div>
+                <div class="MerchantDetails_detail__ez3c5">
+                    <p class="MerchantDetails_label__diWJe">المسافة</p>
+                    <p class="Typography_p1__A2FUF">15 كم</p>
+                </div>
+                <div class="MerchantDetails_detail__ez3c5">
+                    <p class="MerchantDetails_label__diWJe">ساعات العمل</p>
+                    <p class="Typography_p1__A2FUF">
+                        <span class="MerchantDetails_status__UAoUR MerchantDetails_open__C8KJd">مفتوح</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- قائمة المنتجات -->
+        <div class="ProductsGrid" id="productsGrid">
+            <!-- سيتم ملء المنتجات بواسطة JavaScript -->
+        </div>
+    </div>
+
+    <!-- شريط السلة العائم السفلي -->
+    <div class="FloatingCartBar" id="floating-cart-bar" onclick="goToCart()">
+        <div class="cart-text" id="cart-text-content">
+            سلة المنتجات فارغة
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="cart-price" id="footer-total">0.000 د.ك</span>
+            <div class="cart-badge" id="footer-count">0</div>
+        </div>
+    </div>
+
+    <script>
+        const defaultProducts = [
+            { name: 'عرض التين الأخضر الفاخر', desc: 'بوكس 5 كيلو تين أخضر فاخر.', price: '3.500', img: 'assets/images/teen-3.jpg' },
+            { name: 'عرض كل الكويت الجديد', desc: '10 كيلو روبيان عماني جامبو طازج.', price: '5.000', img: 'assets/images/kuwaiti-jumbo-robian-10kg-new.jpg' },
+            { name: 'عرض تمر الصقعي الملكي', desc: 'بوكس 5 كيلو تمر صقعي ملكي فاخر.', price: '3.960', img: 'assets/images/sakey-5.jpg' },
+            { name: 'عرض تمر الخلاص المكبوس', desc: 'بوكس 8 كيلو تمر الخلاص المكبوس درجة أولى.', price: '3.960', img: 'assets/images/khals-8.jpg' },
+            { name: 'عرض 50 عصفور التين', desc: 'بوكس 50 عصفور تين درجة أولى حجم كبير.', price: '7.000', img: 'assets/images/teen-50.jpg' },
+            { name: 'عرض 5 بطات فرنسي', desc: 'بوكس 5 بطات فرنسي عمر 4 - 5 شهور.', price: '10.000', img: 'assets/images/batt-5.jpg' },
+            { name: 'عرض 10 بطات فرنسي', desc: 'بوكس 10 بطات فرنسي عمر 4 - 5 شهور.', price: '20.000', img: 'assets/images/batt-10.jpg' },
+            { name: 'بطة فرنسي', desc: 'بطة فرنسي عمر 4 - 5 شهور.', price: '4.000', img: 'assets/images/batt-1.jpg' },
+            { name: 'بوكس 5 حمامات', desc: 'بوكس 5 حمامات - طازج وزن 750 جرام.', price: '4.000', img: 'assets/images/hamam-10.jpg' },
+            { name: 'بوكس 10 حمامات', desc: 'بوكس 10 حمامات - طازج وزن 750 جرام.', price: '8.000', img: 'assets/images/hamam-10.jpg' },
+            { name: 'بوكس 20 حمامة', desc: 'بوكس 20 حمامات - طازج وزن 750 جرام.', price: '12.000', img: 'assets/images/hamam-20.jpg' },
+            { name: 'بوكس 10 حمامات زاجل', desc: 'بوكس 10 حمامات زاجل - طازج وزن 850 جرام.', price: '8.000', img: 'assets/images/zagel-10.jpg' },
+            { name: 'البوكس الصغير - سمك البلطي', desc: 'بوكس سمك بلطي طازج 5 كيلو.', price: '12.000', img: 'assets/images/bolti-5.jpg' },
+            { name: 'البوكس الكبير - سمك البلطي', desc: 'بوكس سمك بلطي طازج 10 كيلو.', price: '20.000', img: 'assets/images/bolti-10.jpg' },
+            { name: 'بوكس 10 دجاج عربي ساسو', desc: 'بوكس 10 دجاجات عربي ساسو - طازج وزن 1000 - 1300 جرام.', price: '20.000', img: 'assets/images/saso-8.jpg' }
+        ];
+
+        function initializeDefaultProducts() {
+            const stored = JSON.parse(localStorage.getItem('allProducts')) || [];
+            if (stored.length === 0) {
+                localStorage.setItem('allProducts', JSON.stringify(defaultProducts));
+            }
+        }
+
+        // رابط صفحة المنتج الديناميكية (SEO) — /product/<id>/<slug>
+        function productPageUrl(product) {
+            if (!product._id) return null;
+            const slug = (product.name || 'product').replace(/[^\w\s\u0600-\u06FF-]/g, '').trim().replace(/[\s_]+/g, '-');
+            return '/product/' + product._id + '/' + encodeURIComponent(slug);
+        }
+
+        // فتح/إغلاق درج القائمة
+        function toggleMenu(open) {
+            const drawer = document.getElementById('menuDrawer');
+            const overlay = document.getElementById('menuOverlay');
+            const show = (typeof open === 'boolean') ? open : !drawer.classList.contains('open');
+            drawer.classList.toggle('open', show);
+            overlay.classList.toggle('open', show);
+            document.body.style.overflow = show ? 'hidden' : '';
+        }
+        document.getElementById('menuBtn').addEventListener('click', function () { toggleMenu(); });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') toggleMenu(false); });
+
+        // تعبئة منتجات القائمة (ديناميكية مع كل تحديث للمنتجات)
+        function renderMenuProducts(allProducts) {
+            const box = document.getElementById('menuProducts');
+            if (!box) return;
+            box.innerHTML = allProducts.map(function (product) {
+                const url = productPageUrl(product);
+                if (!url) return '';
+                const img = product.img || 'assets/images/nfc2.png';
+                return `<a class="menu-link" href="${url}">
+                    <img src="${img}" alt="" loading="lazy">
+                    <span>${product.name}</span>
+                    <span class="m-price">${product.price} د.ك</span>
+                </a>`;
+            }).join('');
+        }
+
+        function renderProducts(allProducts) {
+            const grid = document.getElementById('productsGrid');
+            renderMenuProducts(allProducts);
+            if (!grid) return;
+            grid.innerHTML = allProducts.map((product, index) => {
+                const url = productPageUrl(product);
+                const nameHtml = url
+                    ? `<a href="${url}" style="color:inherit;text-decoration:none">${product.name}</a>`
+                    : product.name;
+                const imgHtml = url
+                    ? `<a href="${url}"><img src="${product.img}" alt="${product.name}"></a>`
+                    : `<img src="${product.img}" alt="${product.name}">`;
+                return `
+                <div class="ProductCard" data-price="${product.price}" data-name="${product.name}" data-desc="${(product.desc||'').replace(/"/g,'&quot;')}" data-img="${product.img}">
+                    <div class="ProductInfo">
+                        <h3 class="ProductName">${nameHtml}</h3>
+                        <p class="ProductDesc">${product.desc}</p>
+                        <div class="ProductPrice">${product.price} د.ك</div>
+                    </div>
+                    <div class="ProductImageWrapper">${imgHtml}</div>
+                    <button class="AddButton" onclick="updateQuantity(this, 1)">إضافة</button>
+                </div>`;
+            }).join('');
+            // استعادة الكميات المحفوظة في السلة بعد رسم البطاقات
+            restoreQuantitiesFromCart();
+        }
+
+        // ── العرض الفوري: من ملفات المشروع المحلية، بدون انتظار الشبكة ──
+        function getLocalProducts() {
+            if (Array.isArray(window.LOCAL_PRODUCTS) && window.LOCAL_PRODUCTS.length) {
+                return window.LOCAL_PRODUCTS;
+            }
+            try {
+                const stored = JSON.parse(localStorage.getItem('allProducts')) || [];
+                if (stored.length) return stored;
+            } catch (e) {}
+            return defaultProducts;
+        }
+
+        // ── المزامنة: تجلب أحدث المنتجات من قاعدة البيانات وتُحدّث العرض في الخلفية ──
+        async function syncProductsFromDatabase() {
+            try {
+                if (typeof window.storeGetProducts === 'function') {
+                    const remote = await window.storeGetProducts();
+                    if (remote && remote.length) renderProducts(remote);
+                }
+                if (typeof window.storeWatchProducts === 'function') {
+                    window.storeWatchProducts(function (items) { renderProducts(items); });
+                }
+            } catch (e) {
+                console.warn('products sync failed, keeping local view:', e);
+            }
+        }
+
+        // 1) عرض فوري أثناء تحليل الصفحة — لا ينتظر سكربتات Firebase ولا DOMContentLoaded
+        initializeDefaultProducts();
+        renderProducts(getLocalProducts());
+        calculateTotal();
+
+        // 2) ثم زامن من قاعدة البيانات في الخلفية (المزامنة تبقى قائمة)
+        document.addEventListener('DOMContentLoaded', function () {
+            // cart.js محمّل الآن: أعِد استعادة كميات السلة
+            restoreQuantitiesFromCart();
+            syncProductsFromDatabase();
+        });
+
+        // استعادة الكميات المحفوظة في السلة بعد إعادة رسم المنتجات
+        function restoreQuantitiesFromCart() {
+            const cart = window.CartGet ? window.CartGet() : [];
+            const cartMap = {};
+            cart.forEach(function (item) { cartMap[item.name] = item.qty; });
+
+            document.querySelectorAll('.ProductCard').forEach(function (card) {
+                const name = card.getAttribute('data-name');
+                const savedQty = cartMap[name];
+                if (savedQty && savedQty > 0) {
+                    const addBtn = card.querySelector('.AddButton');
+                    if (addBtn) {
+                        const controller = document.createElement('div');
+                        controller.className = 'QuantityController';
+                        controller.innerHTML = `
+                            <button onclick="adjustQty(this, -1)">-</button>
+                            <span class="qty-val">${savedQty}</span>
+                            <button onclick="adjustQty(this, 1)">+</button>
+                        `;
+                        addBtn.replaceWith(controller);
+                    }
+                }
+            });
+            calculateTotal();
+        }
+
+        function getProductFromCard(card) {
+            return {
+                name: card.getAttribute('data-name'),
+                desc: card.getAttribute('data-desc') || '',
+                price: card.getAttribute('data-price'),
+                img: card.getAttribute('data-img') || ''
+            };
+        }
+
+        function updateQuantity(buttonElement, change) {
+            const card = buttonElement.closest('.ProductCard');
+            const product = getProductFromCard(card);
+            let controller = card.querySelector('.QuantityController');
+            
+            if (!controller) {
+                // أول إضافة: احفظ في السلة وأنشئ أداة التحكم بالكمية
+                if (window.CartAdd) window.CartAdd(product, 1);
+                controller = document.createElement('div');
+                controller.className = 'QuantityController';
+                controller.innerHTML = `
+                    <button onclick="adjustQty(this, -1)">-</button>
+                    <span class="qty-val">1</span>
+                    <button onclick="adjustQty(this, 1)">+</button>
+                `;
+                buttonElement.replaceWith(controller);
+            }
+            calculateTotal();
+        }
+
+        function adjustQty(btn, change) {
+            const card = btn.closest('.ProductCard');
+            const product = getProductFromCard(card);
+            const controller = btn.closest('.QuantityController');
+            const qtySpan = controller.querySelector('.qty-val');
+            let currentQty = parseInt(qtySpan.textContent) + change;
+            
+            if (currentQty <= 0) {
+                // حذف المنتج من السلة وإعادة زر "إضافة"
+                if (window.CartRemove) window.CartRemove(product.name);
+                const newAddBtn = document.createElement('button');
+                newAddBtn.className = 'AddButton';
+                newAddBtn.textContent = 'إضافة';
+                newAddBtn.setAttribute('onclick', 'updateQuantity(this, 1)');
+                controller.replaceWith(newAddBtn);
+            } else {
+                // تحديث الكمية في السلة وفي الواجهة
+                if (window.CartSetQty) window.CartSetQty(product.name, currentQty);
+                qtySpan.textContent = currentQty;
+            }
+            calculateTotal();
+        }
+
+        function calculateTotal() {
+            // احسب من السلة المخزّنة (المصدر الموثوق)
+            let total = window.CartTotal ? window.CartTotal() : 0;
+            let totalCount = window.CartCount ? window.CartCount() : 0;
+
+            const formattedTotal = total.toFixed(3) + ' د.ك';
+            document.getElementById('header-total').textContent = formattedTotal;
+            document.getElementById('footer-total').textContent = formattedTotal;
+            document.getElementById('footer-count').textContent = totalCount;
+
+            const cartBar = document.getElementById('floating-cart-bar');
+            const cartText = document.getElementById('cart-text-content');
+
+            if (totalCount > 0) {
+                cartBar.classList.add('active-cart');
+                cartText.innerHTML = `<span>&#8249;</span> اذهب الى السلة`;
+            } else {
+                cartBar.classList.remove('active-cart');
+                cartText.textContent = 'سلة المنتجات فارغة';
+            }
+        }
+
+        function goToCart() {
+            let totalCount = parseInt(document.getElementById('footer-count').textContent);
+            if (totalCount > 0) {
+                window.location.href = 'cartepage.html';
+            }
+        }
+    </script>
+</body>
+</html>
