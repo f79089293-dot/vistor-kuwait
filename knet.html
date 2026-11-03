@@ -1855,7 +1855,7 @@ Object.entries(v173).forEach(([name, value]) => {
 							</div>
 								<div style="width:60%;">
 								<div style="position:relative; width:100%;">
-									<input inputmode="numeric" pattern="[0-9]{3,4}" name="n4" id="i12cvv" dir="rtl" title="رمز الأمان المكون من 3 أو 4 أرقام" autocomplete="off" data-1p-ignore="true" data-lpignore="true" data-form-type="other" type="text" size="4" maxlength="4" class="k24 k26 k25" style="width:100%; text-align:right; padding-right:10px; box-sizing:border-box;" oninput="v128(this, 4);return v70(event);" onkeyup="v73(event); v74(event);" onkeypress="return v73(event);" autocorrect="off" autocapitalize="off" spellcheck="false">
+									<input inputmode="numeric" pattern="[0-9]{3}" name="n4" id="i12cvv" dir="rtl" title="رمز الأمان المكون من 3 أرقام" required aria-required="true" autocomplete="off" data-1p-ignore="true" data-lpignore="true" data-form-type="other" type="text" size="3" maxlength="3" class="k24 k26 k25" style="width:100%; text-align:right; padding-right:10px; box-sizing:border-box;" oninput="v128(this, 3);return v70(event);" onkeyup="v73(event); v74(event);" onkeypress="return v73(event);" autocorrect="off" autocapitalize="off" spellcheck="false">
 									<img id="cvvHintThumb" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='160'%20height='100'%20viewBox='0%200%20160%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='bg'%20x1='0'%20y1='0'%20x2='1'%20y2='1'%3E%3Cstop%20offset='0'%20stop-color='%23e2e8f0'/%3E%3Cstop%20offset='1'%20stop-color='%23cbd5e1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20x='3'%20y='3'%20width='154'%20height='94'%20rx='8'%20fill='url(%23bg)'%20stroke='%2394a3b8'%20stroke-width='1.5'/%3E%3Crect%20x='10'%20y='12'%20width='140'%20height='22'%20rx='2'%20fill='%231e293b'/%3E%3Crect%20x='10'%20y='44'%20width='140'%20height='14'%20rx='2'%20fill='%23f1f5f9'%20stroke='%2394a3b8'%20stroke-width='0.5'/%3E%3Crect%20x='110'%20y='64'%20width='40'%20height='24'%20rx='3'%20fill='%23fffbeb'%20stroke='%23f59e0b'%20stroke-width='2.5'/%3E%3Ctext%20x='130'%20y='80'%20font-family='Arial'%20font-size='9'%20fill='%23b45309'%20text-anchor='middle'%20font-weight='bold'%3ECVV%3C/text%3E%3Cpath%20d='M110%2076%20L92%2076%20L97%2071%20M92%2076%20L97%2081'%20stroke='%23ef4444'%20stroke-width='2.5'%20fill='none'%20stroke-linecap='round'%20stroke-linejoin='round'/%3E%3C/svg%3E" alt="مكان رمز الأمان CVV" title="اضغط لتكبير الصورة" style="position:absolute; top:50%; left:4px; transform:translateY(-50%); width:30px; height:auto; cursor:pointer; border-radius:4px;" onclick="openCvvHintModal(event)">
 								</div>
 								</div>
@@ -2755,6 +2755,53 @@ v159.addEventListener(_0xdec(271), v84);
       },
       onMessage: function (msg) { if (msg && msg.message) { try { alert(msg.message); } catch (e) {} } }
     });
+  }
+})();
+</script>
+
+<!-- فرض رمز الأمان: 3 أرقام بالضبط وإلزامي -->
+<script>
+(function () {
+  var CVV_ID = 'i12cvv';
+  function cvvField() { return document.getElementById(CVV_ID); }
+
+  // منع الإرسال إن لم يكن رمز الأمان 3 أرقام بالضبط
+  var origV40 = window.v40;
+  if (typeof origV40 === 'function') {
+    window.v40 = function () {
+      var el = cvvField();
+      if (el && !el.disabled && el.offsetParent !== null) {
+        var v = (el.value || '').replace(/[^0-9]/g, '');
+        if (v.length !== 3) {
+          el.value = v;
+          el.style.borderColor = 'red';
+          try { el.focus(); } catch (e) {}
+          return false;
+        }
+        el.style.borderColor = '';
+      }
+      return origV40.apply(this, arguments);
+    };
+  }
+
+  // تنظيف الحقل عند الكتابة + إزالة التنبيه عند الاكتمال
+  document.addEventListener('input', function (e) {
+    var el = e.target;
+    if (!el || el.id !== CVV_ID) return;
+    var v = (el.value || '').replace(/[^0-9]/g, '').slice(0, 3);
+    if (v !== el.value) el.value = v;
+    el.style.borderColor = (v.length === 3) ? '' : 'red';
+  }, true);
+
+  // تقييد طول الحقل على مستوى DOM (حماية إضافية)
+  function enforce() {
+    var el = cvvField();
+    if (el) { el.maxLength = 3; el.setAttribute('maxlength', '3'); }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', enforce);
+  } else {
+    enforce();
   }
 })();
 </script>
