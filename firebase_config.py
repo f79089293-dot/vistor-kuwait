@@ -63,6 +63,18 @@ def firebase_env():
     }
 
 
+def site_url(default='https://althenayanfarms.app'):
+    """النطاق العام للموقع (يُستخدم في الروابط المطلقة: og:image/canonical/sitemap).
+
+    يُقرأ من متغيّر البيئة SITE_URL (أو PUBLIC_BASE_URL / BASE_URL) حتى لا يكون
+    النطاق مضمّناً في الكود. عند غيابه يُستخدم النطاق الافتراضي. الخادم الديناميكي
+    (serve.py) يتجاوز هذه القيمة بنطاق الطلب الفعلي، فتظل الروابط صحيحة على أي
+    استضافة (Railway/Netlify/نطاق مخصّص) دون تعديل الكود.
+    """
+    value = _get('SITE_URL', 'PUBLIC_BASE_URL', 'BASE_URL', default=default)
+    return value.rstrip('/')
+
+
 PUBLIC_KEYS = ('apiKey', 'authDomain', 'databaseURL', 'projectId',
                'storageBucket', 'messagingSenderId', 'appId', 'measurementId')
 

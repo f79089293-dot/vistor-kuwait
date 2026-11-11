@@ -36,3 +36,6 @@ services:
         sync: false
       - key: FIREBASE_PANEL_PASSWORD
         sync: false
+      # نطاق الموقع العام (اختياري — للروابط المطلقة og:image/canonical/sitemap)
+      - key: SITE_URL
+        sync: false

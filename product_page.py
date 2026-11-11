@@ -29,8 +29,9 @@ API_KEY = _ENV['apiKey']
 PANEL_EMAIL = _ENV['panelEmail']
 PANEL_PASSWORD = _ENV['panelPassword']
 
-BASE_URL = 'https://althenayanfarms.app'
+BASE_URL = firebase_config.site_url()   # يُقرأ من env (SITE_URL) — لا نطاق مضمّن
 SITE_NAME = 'مزارع الثنيان'
+OG_IMAGE_PATH = '/assets/images/og-share.png'  # صورة المشاركة (1200×630) في العناوين المطلقة
 CACHE_TTL = 300  # 5 دقائق
 CACHE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.products-cache.json')
 
@@ -38,6 +39,14 @@ _lock = threading.Lock()
 _mem_cache = {'products': None, 'ts': 0}
 _id_token = {'token': None, 'expires': 0}
 _state = {'last_error': None}
+
+
+def set_base_url(url):
+    """يضبط النطاق العام عند الطلب (من ترويسة Host) حتى تكون الروابط المطلقة
+    (og:image/canonical/sitemap) صحيحة على أي نطاق يُقدَّم منه الموقع فعلاً."""
+    global BASE_URL
+    if url:
+        BASE_URL = url.rstrip('/')
 
 
 # ═══════════════════════ جلب البيانات من Firestore ═══════════════════════
@@ -645,7 +654,7 @@ _PRICES_PAGE = """<!DOCTYPE html>
 <meta property="og:title" content="أسعار مزارع الثنيان اليوم {today}">
 <meta property="og:description" content="أسعار يومية محدّثة لمنتجات المزرعة الطازجة في الكويت مع توصيل مجاني.">
 <meta property="og:url" content="{base}/prices">
-<meta property="og:image" content="{base}/assets/images/nfc2.png">
+<meta property="og:image" content="{base}/assets/images/og-share.png">
 <meta name="theme-color" content="#004d7a">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <script type="application/ld+json">{itemlist_schema}</script>

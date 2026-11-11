@@ -16,6 +16,15 @@ import firebase_config  # noqa: E402
 ENV_PLACEHOLDER = b'<script src="/assets/js/firebase-env.js"></script>'
 ENV_PATH = '/assets/js/firebase-env.js'
 
+# النطاق الافتراضي المضمّن في الصفحات الثابتة (og:image/canonical/sitemap).
+# يُستبدل عند الطلب بالنطاق الفعلي من ترويسة Host، فتعمل الصور والروابط المطلقة
+# على أي استضافة (Railway/Netlify/نطاق مخصّص) دون تعديل الكود.
+PLACEHOLDER_SITE_URL = 'https://althenayanfarms.app'   # القيمة المضمّنة في الملفات
+CONFIGURED_SITE_URL = firebase_config.site_url(default='')  # نطاق اختياري من env
+# كل النطاقات التي يجب تصحيحها إلى نطاق الطلب الفعلي.
+SOURCE_SITE_URLS = {s.encode('utf-8') for s in
+                    (PLACEHOLDER_SITE_URL, CONFIGURED_SITE_URL) if s}
+
 
 def _env_script(include_credentials=False):
     """وسم سكربت يحقن الإعدادات.
@@ -65,6 +74,26 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *a, **kw):
         super().__init__(*a, directory=ROOT, **kw)
 
+    def _request_site_url(self):
+        """النطاق الفعلي من ترويسة Host (مع احترام X-Forwarded-Proto خلف الوكلاء).
+        يُستخدم لتصحيح الروابط المطلقة (og:image/canonical) لكل نطاق."""
+        host = self.headers.get('Host', '')
+        if not host:
+            return None
+        proto = self.headers.get('X-Forwarded-Proto', 'http').split(',')[0].strip() or 'http'
+        return '%s://%s' % (proto, host)
+
+    def _rewrite_base(self, content, request_url):
+        """يستبدل النطاق الافتراضي/المُعدّ في المحتوى بالنطاق الفعلي للطلب."""
+        if not request_url:
+            return content
+        target = request_url.encode('utf-8')
+        if target in SOURCE_SITE_URLS:
+            return content
+        for src in SOURCE_SITE_URLS:
+            content = content.replace(src, target)
+        return content
+
     def guess_type(self, path):
         return MIME.get(os.path.splitext(path)[1].lower(), 'application/octet-stream')
 
@@ -77,6 +106,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def _handle(self, with_body=True):
         # فك ترميز المسار (يدعم أسماء الملفات غير الإنجليزية مثل أسماء عربية)
         path = urllib.parse.unquote(self.path.split('?', 1)[0])
+
+        # النطاق الفعلي للطلب — لتصحيح الروابط المطلقة (og:image/canonical/sitemap)
+        self._site_url = self._request_site_url()
 
         # حجب الملفات الحساسة (متغيّرات البيئة/الكود المصدري) مهما كان الطلب
         base = os.path.basename(path)
@@ -183,7 +215,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
     def _serve_dynamic(self, text, ctype, with_body=True, status=200):
         """يخدم محتوى مولّداً ديناميكياً (HTML/XML) مع gzip وكاش قصير."""
-        content = text.encode('utf-8')
+        content = self._rewrite_base(text.encode('utf-8'), getattr(self, '_site_url', None))
         gzipped = None
         if 'gzip' in self.headers.get('Accept-Encoding', ''):
             buf = BytesIO()
@@ -226,6 +258,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         # صفحات لوحة التحكم: إعدادات عامة فقط. صفحات الموقع: مع بيانات المصادقة.
         if ENV_PLACEHOLDER in content:
             content = content.replace(ENV_PLACEHOLDER, _env_script(include_credentials=not is_admin))
+
+        # تصحيح الروابط المطلقة (og:image/canonical/sitemap) للنطاق الفعلي — HTML/XML/TXT فقط.
+        if ext in {'.html', '.htm', '.xml', '.txt'}:
+            content = self._rewrite_base(content, getattr(self, '_site_url', None))
 
         # 🚫 لوحة التحكم: no-store نهائي — لا كاش إطلاقاً (لحظية الأحداث)
         if is_admin:
