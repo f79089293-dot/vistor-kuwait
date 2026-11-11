@@ -34,7 +34,6 @@ python3 serve.py
 ├── admin/                  # لوحة التحكم الجديدة
 │   ├── index.html          # واجهة لوحة التحكم
 │   ├── favicon.svg
-│   ├── logo-*.png          # شعارات البنوك
 │   └── assets/
 │       ├── panel.css       # نفس CSS الأصلي (Tailwind مُجمّع، 138KB)
 │       └── js/
