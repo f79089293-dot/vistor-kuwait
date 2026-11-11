@@ -1016,12 +1016,8 @@
     }
   });
 
-  // التحقق من جلسة محفوظة عند التحميل
-  if (localStorage.getItem('zain_panel_auth') === '1') {
-    firebase.auth().signInWithEmailAndPassword(PANEL_EMAIL, PANEL_PASSWORD)
-      .then(() => showApp())
-      .catch(() => { localStorage.removeItem('zain_panel_auth'); });
-  }
+  // استعادة الجلسة المحفوظة تتم تلقائياً عبر onAuthStateChanged (Firebase يحفظ الجلسة).
+  // لا تُضمَّن بيانات دخول في الواجهة إطلاقاً.
 
   console.log('%cلوحة الإشعارات المتقدمة — جاهزة', 'color:#10b981;font-weight:bold');
 })();

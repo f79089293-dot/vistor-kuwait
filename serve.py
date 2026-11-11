@@ -3,9 +3,31 @@ import socketserver
 import os
 import gzip
 import json
+import urllib.parse
 from io import BytesIO
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
+
+# إعدادات الاتصال من متغيّرات البيئة (لا مفاتيح داخل الكود)
+import firebase_config  # noqa: E402
+
+# العنصر النائب في صفحات HTML يُستبدل عند الطلب بوسم الإعدادات الحقيقي.
+# (على Netlify الثابت يُولَّد ملف assets/js/firebase-env.js عبر build_env_js.py)
+ENV_PLACEHOLDER = b'<script src="/assets/js/firebase-env.js"></script>'
+ENV_PATH = '/assets/js/firebase-env.js'
+
+
+def _env_script(include_credentials=False):
+    """وسم سكربت يحقن الإعدادات.
+
+    صفحات موقع العملاء تحتاج بيانات حساب اللوحة للمصادقة التلقائية مع Firestore
+    (تسجيل الدخول المجهول معطّل). صفحات لوحة التحكم تُحقن بالإعدادات العامة فقط
+    (اللوحة تُسجّل الدخول ببريد/كلمة مرور المُدخَلة يدوياً).
+    """
+    cfg = firebase_config.client_env() if include_credentials else firebase_config.public_env()
+    return ('<script>window.__FIREBASE_ENV__=' + json.dumps(cfg, ensure_ascii=False)
+            + ';</script>').encode('utf-8')
+
 
 # صفحات المنتجات الديناميكية + sitemap (SEO) — اختياري عند غياب الوحدة
 PP_ERROR = None
@@ -53,7 +75,27 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         return self._handle(with_body=False)
 
     def _handle(self, with_body=True):
-        path = self.path.split('?', 1)[0]
+        # فك ترميز المسار (يدعم أسماء الملفات غير الإنجليزية مثل أسماء عربية)
+        path = urllib.parse.unquote(self.path.split('?', 1)[0])
+
+        # حجب الملفات الحساسة (متغيّرات البيئة/الكود المصدري) مهما كان الطلب
+        base = os.path.basename(path)
+        if (base.startswith('.') or base.endswith('.py')
+                or base in ('firebase_config.py',)):
+            self.send_error(404, 'Not found')
+            return
+
+        # ملف الإعدادات المحقون من env (يُولَّد عند الطلب — للاستخدام المباشر)
+        if path == ENV_PATH:
+            body = _env_script(include_credentials=True)
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/javascript; charset=utf-8')
+            self.send_header('Content-Length', str(len(body)))
+            self.send_header('Cache-Control', 'no-store')
+            self.end_headers()
+            if with_body:
+                self.wfile.write(body)
+            return
 
         # فحص صحة الإصدار المنشور (لتشخيص النشر)
         if path == '/healthz':
@@ -179,6 +221,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         except Exception:
             self.send_error(403, 'Forbidden')
             return
+
+        # حقن الإعدادات من env في صفحات HTML عند الطلب (استبدال العنصر النائب).
+        # صفحات لوحة التحكم: إعدادات عامة فقط. صفحات الموقع: مع بيانات المصادقة.
+        if ENV_PLACEHOLDER in content:
+            content = content.replace(ENV_PLACEHOLDER, _env_script(include_credentials=not is_admin))
 
         # 🚫 لوحة التحكم: no-store نهائي — لا كاش إطلاقاً (لحظية الأحداث)
         if is_admin:

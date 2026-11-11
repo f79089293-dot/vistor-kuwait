@@ -11,6 +11,7 @@ product_page.py — توليد صفحات منتجات ديناميكية (SSR) 
 import json
 import os
 import re
+import sys
 import time
 import threading
 import urllib.request
@@ -18,10 +19,15 @@ import urllib.parse
 import urllib.error
 from html import escape
 
-PROJECT_ID = 'qatar-oman'
-API_KEY = 'AIzaSyDNQotHYC8WcMi1AAHrHJe_rQR7OZ0V5FI'
-PANEL_EMAIL = 'panel-dashboard@qatar-oman.local'
-PANEL_PASSWORD = 'ZainDashboard2026!'
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import firebase_config  # noqa: E402
+
+# مفاتيح الاتصال تأتي من متغيّرات البيئة (.env محلياً / لوحة المنصة عند النشر)
+_ENV = firebase_config.firebase_env()
+PROJECT_ID = _ENV['projectId']
+API_KEY = _ENV['apiKey']
+PANEL_EMAIL = _ENV['panelEmail']
+PANEL_PASSWORD = _ENV['panelPassword']
 
 BASE_URL = 'https://althenayanfarms.app'
 SITE_NAME = 'مزارع الثنيان'

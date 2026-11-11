@@ -1,22 +1,28 @@
-// إعدادات Firebase — مشروع qatar-oman (موحّد للموقع ولوحة التحكم)
+// إعدادات Firebase — تُقرأ من متغيّرات البيئة (لا مفاتيح في الكود)
+//   • serve.py: window.__FIREBASE_ENV__ محقون في الصفحة عند الطلب
+//   • Netlify الثابت: assets/js/firebase-env.js مولّد عند البناء
+const ENV = window.__FIREBASE_ENV__ || {};
 const firebaseConfig = {
-  apiKey: "AIzaSyDNQotHYC8WcMi1AAHrHJe_rQR7OZ0V5FI",
-  authDomain: "qatar-oman.firebaseapp.com",
-  databaseURL: "https://qatar-oman-default-rtdb.firebaseio.com",
-  projectId: "qatar-oman",
-  storageBucket: "qatar-oman.firebasestorage.app",
-  messagingSenderId: "488967046879",
-  appId: "1:488967046879:web:77d744e1b45d0f59da8b6a",
-  measurementId: "G-FP0FKD9W4T"
+  apiKey: ENV.apiKey,
+  authDomain: ENV.authDomain,
+  databaseURL: ENV.databaseURL,
+  projectId: ENV.projectId,
+  storageBucket: ENV.storageBucket,
+  messagingSenderId: ENV.messagingSenderId,
+  appId: ENV.appId,
+  measurementId: ENV.measurementId
 };
+
+if (!firebaseConfig.apiKey) {
+  console.error('Firebase config مفقود: اضبط متغيّرات البيئة FIREBASE_*.');
+}
 
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
-// بيانات دخول لوحة التحكم (نفس حساب موقع العملاء — له صلاحية قراءة/كتابة على customers)
-const PANEL_EMAIL = 'panel-dashboard@qatar-oman.local';
-const PANEL_PASSWORD = 'ZainDashboard2026!';
+// لا توجد بيانات دخول مضمّنة في الواجهة. تسجيل دخول اللوحة يستخدم
+// Firebase Auth (بريد/كلمة مرور المُدخَلة في شاشة الدخول) — انظر admin/assets/js/app.js.
 
 const db = firebase.firestore();
 const rtd = firebase.database();

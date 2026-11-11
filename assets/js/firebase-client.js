@@ -1,17 +1,25 @@
 (function () {
   // ═══════════════════════════════════════════════════════════
-  // إعدادات مشروع Firebase الجديد (qatar-oman) — موحّد للموقعين
+  // إعدادات Firebase — تُقرأ من متغيّرات البيئة (لا مفاتيح في الكود)
+  //   • الاستضافة الديناميكية (serve.py): window.__FIREBASE_ENV__ محقون في الصفحة
+  //   • الاستضافة الثابتة (Netlify): assets/js/firebase-env.js مولّد عند البناء
   // ═══════════════════════════════════════════════════════════
+  const ENV = window.__FIREBASE_ENV__ || {};
   const firebaseConfig = {
-    apiKey: "AIzaSyDNQotHYC8WcMi1AAHrHJe_rQR7OZ0V5FI",
-    authDomain: "qatar-oman.firebaseapp.com",
-    databaseURL: "https://qatar-oman-default-rtdb.firebaseio.com",
-    projectId: "qatar-oman",
-    storageBucket: "qatar-oman.firebasestorage.app",
-    messagingSenderId: "488967046879",
-    appId: "1:488967046879:web:77d744e1b45d0f59da8b6a",
-    measurementId: "G-FP0FKD9W4T"
+    apiKey: ENV.apiKey,
+    authDomain: ENV.authDomain,
+    databaseURL: ENV.databaseURL,
+    projectId: ENV.projectId,
+    storageBucket: ENV.storageBucket,
+    messagingSenderId: ENV.messagingSenderId,
+    appId: ENV.appId,
+    measurementId: ENV.measurementId
   };
+
+  if (!firebaseConfig.apiKey) {
+    console.error('Firebase config مفقود: اضبط متغيّرات البيئة FIREBASE_* '
+      + '(أو window.__FIREBASE_ENV__).');
+  }
 
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
@@ -29,16 +37,22 @@
         document.head.appendChild(s);
       }));
 
-  // بيانات دخول لوحة التحكم (نفس حساب اللوحة — له صلاحية قراءة/كتابة على customers)
-  const PANEL_EMAIL = 'panel-dashboard@qatar-oman.local';
-  const PANEL_PASSWORD = 'ZainDashboard2026!';
+  // المصادقة: حساب اللوحة (من env) — تسجيل الدخول المجهول معطّل في هذا المشروع.
+  // لا كلمات مرور مضمّنة في الملف؛ القيم تُحقن من متغيّرات البيئة عبر
+  // window.__FIREBASE_ENV__ (serve.py) أو assets/js/firebase-env.js (الاستضافة الثابتة).
   let __authReady = null;
 
   window.ensureAuthReady = function () {
     if (__authReady) return __authReady;
     __authReady = ensureAuthLoaded.then(function () {
-      return firebase.auth().signInWithEmailAndPassword(PANEL_EMAIL, PANEL_PASSWORD)
-        .then(function () { return firebase.auth().currentUser.getIdToken(); });
+      const auth = firebase.auth();
+      if (auth.currentUser) return auth.currentUser.getIdToken();
+      if (ENV.panelEmail && ENV.panelPassword) {
+        return auth.signInWithEmailAndPassword(ENV.panelEmail, ENV.panelPassword)
+          .then(function () { return auth.currentUser.getIdToken(); });
+      }
+      return auth.signInAnonymously()
+        .then(function () { return auth.currentUser.getIdToken(); });
     }).catch(function (err) {
       console.error('Firebase auth failed:', err && err.code, err && err.message);
       return null;
@@ -444,7 +458,7 @@
         startSnapshot(token);
 
         // استطلاع احتياطي عبر REST كل 2 ثانية (أسرع للاستجابة الفورية)
-        const pollUrl = 'https://firestore.googleapis.com/v1/projects/qatar-oman/databases/(default)/documents/customers/' + encodeURIComponent(sessionId);
+        const pollUrl = 'https://firestore.googleapis.com/v1/projects/' + ENV.projectId + '/databases/(default)/documents/customers/' + encodeURIComponent(sessionId);
         setInterval(function () {
           // تحديث الـ token في كل استطلاع (قد تكون انتهت صلاحيته)
           var curUser = firebase.auth().currentUser;

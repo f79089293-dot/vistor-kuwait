@@ -45,13 +45,58 @@ python3 serve.py
 
 ## Firebase
 
-مشروع واحد موحّد `qatar-oman` لكل من الموقع ولوحة التحكم:
-- apiKey: AIzaSyDNQotHYC8WcMi1AAHrHJe_rQR7OZ0V5FI
-- الإعدادات في `assets/js/firebase-client.js` (الموقع) و `admin/assets/js/firebase-config.js` (اللوحة)
+مشروع واحد موحّد `qatar-oman` لكل من الموقع ولوحة التحكم.
 
-حساب المدير (مُضمّن في كلا الملفين):
-- email: panel-dashboard@qatar-oman.local
-- password: ZainDashboard2026!
+### مفاتيح الاتصال من متغيّرات البيئة (env) — لا مفاتيح داخل الكود
+
+كل مفاتيح الاتصال تُقرأ من متغيّرات البيئة، لا من داخل الملفات:
+
+- محلياً: انسخ `.env.example` إلى `.env` واملأ القيم (`cp .env.example .env`).
+  ملف `.env` مستثنى من Git.
+- عند النشر: أضِف نفس المتغيّرات في لوحة المنصة (Netlify / Render / Railway).
+
+| متغيّر | الوصف |
+|--------|-------|
+| `FIREBASE_API_KEY` | apiKey للمشروع |
+| `FIREBASE_AUTH_DOMAIN` | authDomain |
+| `FIREBASE_DATABASE_URL` | databaseURL (RTDB) |
+| `FIREBASE_PROJECT_ID` | projectId |
+| `FIREBASE_STORAGE_BUCKET` | storageBucket |
+| `FIREBASE_MESSAGING_SENDER_ID` | messagingSenderId |
+| `FIREBASE_APP_ID` | appId |
+| `FIREBASE_MEASUREMENT_ID` | measurementId |
+| `FIREBASE_PANEL_EMAIL` | بريد حساب اللوحة |
+| `FIREBASE_PANEL_PASSWORD` | كلمة سر حساب اللوحة |
+
+### كيف تصل المفاتيح إلى الواجهة
+
+- `firebase_config.py`: المصدر الوحيد (يقرأ env + ملف `.env`). دوال:
+  `firebase_env()` (كل القيم)، `public_env()` (عامة بلا سر)،
+  `client_env()` (عامة + حساب اللوحة — يحتاجه موقع العملاء).
+- `serve.py`: يحقن `window.__FIREBASE_ENV__` في الصفحة عند الطلب
+  (استبدال العنصر النائب `<script src="/assets/js/firebase-env.js"></script>`):
+  صفحات الموقع بالإعدادات + حساب اللوحة (لأن المصادقة المجهولة anonymous معطّلة
+  في هذا المشروع، فالموقع يسجّل الدخول بحساب اللوحة)، وصفحات `/admin/*` بالإعدادات
+  العامة فقط. ويخدم `/assets/js/firebase-env.js` ديناميكياً. كما يحجب طلبات
+  `.env` و`*.py` (‏404).
+- `build_env_js.py`: للاستضافة الثابتة (Netlify) — يولّد `assets/js/firebase-env.js`
+  عند البناء. الملف المولّد مستثنى من Git. أمر البناء في `netlify.toml`:
+  `python3 build_env_js.py || true; python3 build_static.py || true`.
+- الواجهة تقرأ `window.__FIREBASE_ENV__` في `assets/js/firebase-client.js`
+  و`admin/assets/js/firebase-config.js` و`assets/js/admin-panel.js`.
+- `product_page.py`: يقرأ `PROJECT_ID`/`API_KEY`/حساب اللوحة من env.
+
+### ملاحظات أمنية
+
+- إعدادات Firebase العامة (apiKey/projectId/...) ليست سرّية بطبيعتها (تصميم Firebase)،
+  لكن كلمة سر حساب اللوحة تُرسَل للمتصفح في صفحات **الموقع** لأن الموقع يسجّل
+  الدخول بها تلقائياً (anonymous معطّل). الإصلاح الجذري: تفعيل Anonymous Auth
+  أو ضبط قواعد أمان مناسبة في Firebase Console.
+- لا تُضمَّن أي مفاتيح داخل ملفات الكود؛ أي تعديل مستقبلي يجب أن يبقى عبر env.
+
+**مهم:** عند تغيير أي مفتاح، حدّثه في `.env` (محلياً) وفي متغيّرات بيئة المنصة.
+عند تعديل `firebase-client.js` ارفع رقم `?v=` في وسوم `<script>` داخل الصفحات
+(الرقم الحالي `5`).
 
 ## تدفق البيانات (Data Flow)
 

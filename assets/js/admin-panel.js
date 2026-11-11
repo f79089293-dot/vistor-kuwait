@@ -1,16 +1,17 @@
 // ═══════════════════════════════════════════════════════════
-// 📊 كود عملي لإنشاء لوحة تحكم Firebase متقدمة
+// 📊 كود عملي لإنشاء لوحة تحكم Firebase متقدمة (قديم — لم يعد مستخدماً)
 // ═══════════════════════════════════════════════════════════
 
-// 1️⃣ تهيئة Firebase
+// 1️⃣ تهيئة Firebase (الإعدادات من متغيّرات البيئة — لا مفاتيح في الكود)
 // ─────────────────────────────────────────────────────────
 
+const ENV = window.__FIREBASE_ENV__ || {};
 const firebaseConfig = {
-  apiKey: "AIzaSyCw6S6m-6m-6m-6m-6m-6m-6m",
-  authDomain: "zain-kw-admin.firebaseapp.com",
-  databaseURL: "https://zain-kw-admin-default-rtdb.firebaseio.com",
-  projectId: "zain-kw-admin",
-  storageBucket: "zain-kw-admin.appspot.com"
+  apiKey: ENV.apiKey,
+  authDomain: ENV.authDomain,
+  databaseURL: ENV.databaseURL,
+  projectId: ENV.projectId,
+  storageBucket: ENV.storageBucket
 };
 
 firebase.initializeApp(firebaseConfig);
