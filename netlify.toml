@@ -8,6 +8,14 @@ headers = [
 ]
 redirects = []
 
+# دالة الحافة: تصحيح دومين روابط المشاركة (og:image/og:url/canonical) تلقائياً
+# من نطاق الطلب الفعلي — فلا يعتمد على أي متغيّر بيئة ولا يحتاج تعديلاً عند
+# تغيير الدومين. تُشغَّل على صفحات HTML/XML فقط؛ الأصول الثابتة مُستثناة.
+[[edge_functions]]
+  function = "og-url"
+  path = "/*"
+  excludedPath = ["/assets/*", "/product-img/*", "/admin/*", "/favicon.ico", "/favicon.svg"]
+
 [functions]
 
   [functions."*"]

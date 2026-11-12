@@ -362,3 +362,37 @@ Netlify فيه خلل معروف في إعادة التوجيه للروابط �
    `localStorage['cart']` بنفس البنية — فلا يفشل الزر إن تأخّر/فشل تحميل `cart.js`.
 3. أعيد توليد كل صفحات `product/*.html` الثابتة (`build_static.py`) — الـ28 صفحة
    متحقَّقة: JS سليم + كل مسارات الصور مطلقة.
+
+## إصلاح صورة المشاركة عند تغيير الدومين (قراءة النطاق تلقائياً)
+
+**المشكلة:** وسوم المشاركة (`og:image`/`og:url`/`canonical`/`twitter:image` وJSON-LD
+و`sitemap.xml` و`feed.xml`) تحمل الدومين **مطلقاً ومضمّناً في الملفات الثابتة**.
+عند تغيير الدومين تبقى تشير للدومين القديم → **صورة المشاركة تظهر خربانة** على
+فيسبوك/واتساب/إنستغرام. (زواحف المشاركة لا تدعم الروابط النسبية، فالحل ليس كتابة
+مسار نسبي، بل معرفة الدومين الحقيقي وقت الطلب.)
+
+**الحل (قراءة النطاق من الطلب — صفر إعداد، لا متغيّرات بيئة):**
+- **الاستضافة الديناميكية (Railway/Render):** `serve.py` → `_rewrite_base()` يستبدل
+  النطاق النائب بنطاق الطلب الفعلي من ترويسة `Host` (مع `X-Forwarded-Proto`) لكل
+  صفحات HTML/XML/TXT وصفحات المنتجات المولّدة ديناميكياً. يغطّي الروابط الكاملة
+  وذكر الدومين المجرّد في النصوص (`PLACEHOLDER_HOST`).
+- **الاستضافة الثابتة (Netlify):** `netlify/edge-functions/og-url.js` — دالة حافة
+  تعترض الرد قبل وصوله للزائر/الزاحف، تقرأ `origin` من `new URL(request.url)`،
+  وتستبدل `althenayanfarms.app` بالنطاق الفعلي في المحتوى النصي (HTML/XML/TXT/RSS)
+  فقط. مربوطة في `netlify.toml` عبر `[[edge_functions]]` على `/*` مع استثناء
+  `/assets/*` و`/product-img/*` و`/admin/*` (أداء + عدم لمس لوحة التحكم).
+
+**الدومين النائب الوحيد:** `althenayanfarms.app` — مكتوب في الملفات الثابتة
+(يُستبدَل دائماً وقت الطلب). تغيير الدومين لا يتطلب تعديل أي ملف.
+
+**النتيجة:** تغيير الدومين يعمل تلقائياً على المنصّات الثلاث بلا أي خطوة يدوية.
+الحالة الوحيدة التي تحتاج تدخّلاً: تغيير الصورة **بنفس الرابط** → اضغط
+"Scrape Again" في Facebook Sharing Debugger (كاش فيسبوك، سلوك خارجي لا علاقة له بالكود).
+
+**اختبار الدالة محلياً (بلا نشر):**
+```bash
+node -e "import('/workspace/project/vistor-kuwait/netlify/edge-functions/og-url.js').then(async m=>{
+  const ctx={next:async()=>new Response('<meta property=\"og:image\" content=\"https://althenayanfarms.app/assets/images/og-share.png\">',{headers:{'content-type':'text/html'}})};
+  console.log(await (await m.default(new Request('https://my-new-domain.com/'),ctx)).text());
+})"
+```

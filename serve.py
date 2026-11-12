@@ -18,10 +18,12 @@ ENV_PATH = '/assets/js/firebase-env.js'
 
 # النطاق الافتراضي المضمّن في الصفحات الثابتة (og:image/canonical/sitemap).
 # يُستبدل عند الطلب بالنطاق الفعلي من ترويسة Host، فتعمل الصور والروابط المطلقة
-# على أي استضافة (Railway/Netlify/نطاق مخصّص) دون تعديل الكود.
+# على أي استضافة (Railway/Render/Netlify/نطاق مخصّص) دون تعديل الكود.
 PLACEHOLDER_SITE_URL = 'https://althenayanfarms.app'   # القيمة المضمّنة في الملفات
 CONFIGURED_SITE_URL = firebase_config.site_url(default='')  # نطاق اختياري من env
-# كل النطاقات التي يجب تصحيحها إلى نطاق الطلب الفعلي.
+# اسم المضيف النائب (بلا بروتوكول) — لاستبدال الروابط الكاملة وذكر الدومين المجرّد.
+PLACEHOLDER_HOST = 'althenayanfarms.app'
+# كل النطاقات الكاملة التي يجب تصحيحها إلى نطاق الطلب الفعلي.
 SOURCE_SITE_URLS = {s.encode('utf-8') for s in
                     (PLACEHOLDER_SITE_URL, CONFIGURED_SITE_URL) if s}
 
@@ -84,14 +86,21 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         return '%s://%s' % (proto, host)
 
     def _rewrite_base(self, content, request_url):
-        """يستبدل النطاق الافتراضي/المُعدّ في المحتوى بالنطاق الفعلي للطلب."""
+        """يستبدل النطاق الافتراضي/المُعدّ في المحتوى بالنطاق الفعلي للطلب.
+
+        يغطّي الروابط الكاملة (og:image/canonical) وذكر الدومين المجرّد في النصوص،
+        فلا يبقى أثر للدومين القديم على أي استضافة يُقدَّم منها الموقع."""
         if not request_url:
             return content
         target = request_url.encode('utf-8')
         if target in SOURCE_SITE_URLS:
             return content
+        # الروابط الكاملة أولاً، ثم اسم المضيف المجرّد (نص التذييل).
         for src in SOURCE_SITE_URLS:
             content = content.replace(src, target)
+        host = request_url.split('://', 1)[-1].encode('utf-8')
+        if host != PLACEHOLDER_HOST.encode('utf-8'):
+            content = content.replace(PLACEHOLDER_HOST.encode('utf-8'), host)
         return content
 
     def guess_type(self, path):
