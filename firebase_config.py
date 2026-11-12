@@ -75,6 +75,19 @@ def site_url(default='https://althenayanfarms.app'):
     return value.rstrip('/')
 
 
+def site_cache_control(default='no-cache, must-revalidate'):
+    """ترويسة Cache-Control لصفحات HTML الخاصة بموقع العملاء.
+
+    تُقرأ من متغيّر البيئة SITE_CACHE_CONTROL. الافتراضي `no-cache, must-revalidate`
+    (يحفظ الصفحة لكن يتحقق من الخادم كل مرة، فيرى الزائر أحدث نسخة مع توفير النطاق).
+    لتعطيل الكاش نهائياً اضبط القيمة على:
+        SITE_CACHE_CONTROL=no-store, no-cache, must-revalidate, max-age=0
+
+    ملاحظة: لوحة التحكم تبقى دائماً no-store بغضّ النظر عن هذا المتغيّر (لحظية الأحداث).
+    """
+    return _get('SITE_CACHE_CONTROL', default=default)
+
+
 PUBLIC_KEYS = ('apiKey', 'authDomain', 'databaseURL', 'projectId',
                'storageBucket', 'messagingSenderId', 'appId', 'measurementId')
 

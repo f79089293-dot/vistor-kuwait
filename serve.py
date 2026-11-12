@@ -27,6 +27,10 @@ PLACEHOLDER_HOST = 'althenayanfarms.app'
 SOURCE_SITE_URLS = {s.encode('utf-8') for s in
                     (PLACEHOLDER_SITE_URL, CONFIGURED_SITE_URL) if s}
 
+# ترويسة كاش صفحات موقع العملاء (تُضبط من متغيّر البيئة SITE_CACHE_CONTROL).
+# الافتراضي: no-cache, must-revalidate (أحدث نسخة + توفير النطاق).
+SITE_CACHE_CONTROL = firebase_config.site_cache_control()
+
 
 def _env_script(include_credentials=False):
     """وسم سكربت يحقن الإعدادات.
@@ -237,8 +241,12 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.send_response(status)
         self.send_header('Content-Type', ctype)
         self.send_header('Content-Length', str(len(body)))
-        # كاش 5 دقائق: سرعة للزوار + حماية لحصة Firestore
-        self.send_header('Cache-Control', 'public, max-age=300')
+        # صفحات HTML الديناميكية (المنتجات/الأسعار) تتبع SITE_CACHE_CONTROL؛
+        # ملفات XML (sitemap/feed) تبقى بكاش قصير لحماية حصة Firestore.
+        if ctype.startswith('text/html'):
+            self.send_header('Cache-Control', SITE_CACHE_CONTROL)
+        else:
+            self.send_header('Cache-Control', 'public, max-age=300')
         if gzipped is not None:
             self.send_header('Content-Encoding', 'gzip')
             self.send_header('Vary', 'Accept-Encoding')
@@ -276,7 +284,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         if is_admin:
             cache = 'no-store, no-cache, must-revalidate'
         elif ext in {'.html', '.htm'}:
-            cache = 'no-cache, must-revalidate'  # صفحات HTML للموقع
+            cache = SITE_CACHE_CONTROL  # صفحات HTML للموقع (متغيّر SITE_CACHE_CONTROL)
         elif ext in STATIC_ASSETS:
             cache = 'public, max-age=31536000, immutable'  # ملفات ثابتة
         else:
