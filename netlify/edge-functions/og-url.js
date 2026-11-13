@@ -26,35 +26,45 @@ const TEXT_TYPES = [
 export default async (request, context) => {
   const response = await context.next();
 
-  const contentType = response.headers.get('content-type') || '';
-  if (!TEXT_TYPES.some((t) => contentType.includes(t))) {
+  // أي خطأ غير متوقّع هنا يجب ألا يُسقط الموقع: نُرجع الرد الأصلي كما هو.
+  // (تسقط الدالة فقط لو فشل context.next() نفسه.)
+  try {
+    const contentType = response.headers.get('content-type') || '';
+    if (!TEXT_TYPES.some((t) => contentType.includes(t))) {
+      return response;
+    }
+
+    const { host } = new URL(request.url);
+    if (host === PLACEHOLDER_HOST) {
+      return response;
+    }
+
+    // مهم: نقرأ نسخة (clone) من الرد، لا الرد نفسه. قراءة جسم الرد الأصلي
+    // تستهلكه (body stream) فيفشل تمريره للزائر بعدها — وهذا كان سبب انهيار
+    // الدالة "uncaught exception" على أي صفحة نصية لا تحمل الدومين النائب
+    // (مثل knet.html و verification.html). النسخة تُبقي الرد الأصلي سليماً.
+    const body = await response.clone().text();
+    if (!body.includes(PLACEHOLDER_HOST)) {
+      return response;
+    }
+
+    // استبدال اسم المضيف النائب باسم المضيف الفعلي. يغطّي الحالتين معاً:
+    //   https://althenayanfarms.app/...  →  https://<host>/...
+    //   althenayanfarms.app (نص مجرّد)   →  <host>
+    const rewritten = body.split(PLACEHOLDER_HOST).join(host);
+
+    const headers = new Headers(response.headers);
+    // الطول/الترميز تغيّرا بعد التعديل — يُعاد حسابهما تلقائياً.
+    headers.delete('content-length');
+    headers.delete('content-encoding');
+    headers.delete('etag');
+
+    return new Response(rewritten, {
+      status: response.status,
+      statusText: response.statusText,
+      headers,
+    });
+  } catch (err) {
     return response;
   }
-
-  const { host, origin } = new URL(request.url);
-  if (host === PLACEHOLDER_HOST) {
-    return response;
-  }
-
-  let body = await response.text();
-  if (!body.includes(PLACEHOLDER_HOST)) {
-    return response;
-  }
-
-  // استبدال اسم المضيف النائب باسم المضيف الفعلي. يغطّي الحالتين معاً:
-  //   https://althenayanfarms.app/...  →  https://<host>/...
-  //   althenayanfarms.app (نص مجرّد)   →  <host>
-  body = body.split(PLACEHOLDER_HOST).join(host);
-
-  const headers = new Headers(response.headers);
-  // الطول/الترميز تغيّرا بعد التعديل — يُعاد حسابهما تلقائياً.
-  headers.delete('content-length');
-  headers.delete('content-encoding');
-  headers.delete('etag');
-
-  return new Response(body, {
-    status: response.status,
-    statusText: response.statusText,
-    headers,
-  });
 };

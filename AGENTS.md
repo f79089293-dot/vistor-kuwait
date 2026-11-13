@@ -396,3 +396,37 @@ node -e "import('/workspace/project/vistor-kuwait/netlify/edge-functions/og-url.
   console.log(await (await m.default(new Request('https://my-new-domain.com/'),ctx)).text());
 })"
 ```
+
+## إصلاح انهيار دالة الحافة على Netlify («This edge function has crashed»)
+
+**الأعراض:** بعد النشر على Netlify كان الموقع كله يُرجع صفحة خطأ
+`This edge function has crashed — uncaught exception during edge function invocation`
+عند أي طلب تقريباً (فتح الموقع، إتمام الطلب، صفحة knet، التحقق OTP...).
+
+**السبب الجذري:** في `netlify/edge-functions/og-url.js` كان يُقرأ جسم الرد الأصلي
+مباشرةً:
+```js
+let body = await response.text();
+if (!body.includes(PLACEHOLDER_HOST)) return response;   // ← هنا الانهيار
+```
+قراءة `response.text()` **تستهلك** جسم الرد (body stream) فلا يبقى قابلاً للتمرير.
+عندما لا يحمل الرد الدومين النائب (أي صفحة نصية **لا** تحتوي `althenayanfarms.app`:
+`knet.html`، `verification.html`، `creatprogect.html`، `google...html`، وأي رد JSON،
+بل وحتى `404`)، تُعاد `response` المستهلَكة نفسها → Netlify يفشل في بثّها للزائر
+ويسقط الدالة → «This edge function has crashed» لكل الطلبات النصية.
+(لهذا عملت صفحة `index.html` — تحمل النائب 24 مرة فيُبنى رد جديد، بينما `knet.html`
+الذي لا يحمل النائب كان يُسقط الموقع.)
+
+**الحل (في نفس الملف):**
+1. قراءة **نسخة** لا الأصل: `await response.clone().text()` — فيبقى الرد الأصلي
+   سليماً ويُمرَّر كما هو عند عدم الحاجة للتعديل.
+2. تغليف منطق التعديل كله في `try/catch` يُعيد الرد الأصلي عند أي خطأ، فلا يمكن
+   لأي استثناء غير متوقّع أن يُسقط الموقع (تسقط الدالة فقط إن فشل `context.next()`).
+3. إزالة المتغيّر غير المستخدم `origin`.
+
+**قاعدة عامة:** في دالة حافة، لا تقرأ جسم الرد الذي ستمرّره (`response.text()` /
+`.json()` / `.arrayBuffer()`) — استخدم `response.clone()` دائماً، أو أعد بناء الرد.
+
+**التحقق:** مجموعة اختبارات محلية (9 حالات) تغطي: صفحة بلا نائب (تنجو)، صفحة بنائب
+(يُستبدل)، نص مجرّد، XML، صورة ثنائية (لا تُلمس)، إعادة توجيه (لا تُلمس)، إزالة
+ترويسات `content-encoding`/`etag`/`content-length` عند التعديل.
