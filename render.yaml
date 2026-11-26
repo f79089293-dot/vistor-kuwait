@@ -39,3 +39,12 @@ services:
       # نطاق الموقع العام (اختياري — للروابط المطلقة og:image/canonical/sitemap)
       - key: SITE_URL
         sync: false
+      # مفتاح توقيع روابط الصفحات الخاصة (الدفع/التحقق) — قيمة عشوائية طويلة
+      - key: PRIVATE_LINK_SECRET
+        generateValue: true
+      # عمر رابط الصفحة الخاصة بالثواني (اختياري)
+      - key: PRIVATE_LINK_TTL
+        sync: false
+      # عمر جلسة لوحة التحكم بالثواني (اختياري)
+      - key: ADMIN_SESSION_TTL
+        sync: false

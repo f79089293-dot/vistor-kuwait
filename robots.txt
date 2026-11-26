@@ -9,12 +9,19 @@ Allow: /cartepage.html
 Allow: /product/
 
 # --- الصفحات الممنوعة من الزحف والفهرسة ---
+# الصفحات الخاصة نُقلت إلى _private وتُقدَّم فقط بروابط موقّعة قصيرة العمر
+Disallow: /_private
+Disallow: /_private/
+Disallow: /p/
 Disallow: /knet.html
 Disallow: /verification.html
 Disallow: /creatprogect.html
 Disallow: /admin
 Disallow: /admin/
 Disallow: /admin/*
+Disallow: /admin-login
+Disallow: /admin-logout
+Disallow: /api/
 Disallow: /صفحات%20اخرى/
 Disallow: /صفحات اخرى/
 

@@ -1,11 +1,24 @@
 # توجيه Netlify — إعادة إنتاج منطق serve.py للاستضافة الثابتة
 # الملف الموجود يُقدَّم أولاً، وإلا تُطبَّق إعادة الكتابة (200 = rewrite)
 
-# /admin و /admin/ → /admin/index.html
-/admin           /admin/index.html  200
-/admin/          /admin/index.html  200
-# أي مسار تحت /admin/ لم يوجد كملف → /admin/index.html (SPA fallback للوحة التحكم)
-/admin/*         /admin/index.html  200
+# ═══ ملفات خاصة (نُقلت إلى _private) ═══
+# على الخادم الديناميكي (serve.py) لا تُخدَم هذه المسارات إطلاقاً؛ الوصول فقط
+# عبر رابط موقّع قصير العمر /p/<token>/<file>. الاستضافة الثابتة لا تنفّذ بوابة،
+# لذا نُعيد كتابة المسارات القديمة إلى الملفات المنقولة حتى لا يتعطّل الموقع.
+/knet.html            /_private/knet.html            200
+/verification.html    /_private/verification.html    200
+/creatprogect.html    /_private/creatprogect.html    200
+
+# /admin و /admin/ → لوحة التحكم المنقولة
+/admin           /_private/admin/index.html  200
+/admin/          /_private/admin/index.html  200
+/admin/*         /_private/admin/index.html  200
+# بوابة الدخول غير متاحة على الاستضافة الثابتة
+/admin-login     /admin/                     302
+
+# ═══ ممنوع نهائياً: ملفات الأسرار ═══
+/_private/secrets/*   /index.html   404
+/_private/secrets     /index.html   404
 
 # صفحات المنتجات: تُولَّد كملفات ثابتة عبر build_static.py إلى
 # /product/<id>/<slug>.html — نُعيد كتابة الرابط النظيف إليها.

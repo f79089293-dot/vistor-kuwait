@@ -430,3 +430,27 @@ if (!body.includes(PLACEHOLDER_HOST)) return response;   // ← هنا الان�
 **التحقق:** مجموعة اختبارات محلية (9 حالات) تغطي: صفحة بلا نائب (تنجو)، صفحة بنائب
 (يُستبدل)، نص مجرّد، XML، صورة ثنائية (لا تُلمس)، إعادة توجيه (لا تُلمس)، إزالة
 ترويسات `content-encoding`/`etag`/`content-length` عند التعديل.
+
+## 🔒 الملفات الخاصة وبوابة الحماية (serve.py)
+
+الملفات الخاصة **لا تُخزَّن في جذر الموقع** ولا تُخدَم بمسار ثابت:
+
+| الملف | مكانه | الوصول |
+|---|---|---|
+| صفحة الدفع | `_private/knet.html` | `/p/<token>/knet.html` |
+| صفحة التحقق | `_private/verification.html` | `/p/<token>/verification.html` |
+| إنشاء مشروع | `_private/creatprogect.html` | `/p/<token>/creatprogect.html` |
+| لوحة التحكم | `_private/admin/` | `/admin/` بعد دخول `/admin-login` |
+| ملفات الأسرار | `_private/secrets/` | لا تُخدَم إطلاقاً (404) |
+
+- `/api/private-link` (POST, same-origin) يُصدر رابطاً موقّعاً HMAC صالحاً
+  `PRIVATE_LINK_TTL` ثانية (افتراضي 45 دقيقة).
+- `PRIVATE_LINK_SECRET` مفتاح التوقيع — اضبطه في بيئة الخادم وإلا يُولَّد مفتاح
+  مؤقّت وتبطل الروابط عند كل إعادة تشغيل.
+- `/admin/*` يتطلب كوكي جلسة `admin_session` (HttpOnly، SameSite=Strict) تُصدر
+  بعد التحقق من `FIREBASE_PANEL_EMAIL`/`FIREBASE_PANEL_PASSWORD` على الخادم.
+- الروابط المطلقة داخل الصفحات الخاصة تُعاد كتابتها إلى نفس الرابط الموقّع،
+  والأصول النسبية تُخدَم من جذر الموقع.
+- صفحات الموقع تستخدم `assets/js/private-nav.js` → `window.goToPrivate(page, fallback)`.
+- الاستضافة الثابتة (Netlify) لا تنفّذ البوابة؛ `_redirects` تعيد كتابة المسارات
+  القديمة فقط. الحماية الفعلية تتطلب تشغيل `serve.py` أو حماية على مستوى المنصة.
